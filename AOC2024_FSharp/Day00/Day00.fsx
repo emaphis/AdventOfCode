@@ -68,3 +68,12 @@ let tests () =
     printfn "...done!"
 
 do tests ()
+
+
+// Output
+
+let answers () =
+    printfn $"Part 1: {part1 data00}"
+    printfn $"Part 2: {part2 data00}"
+
+do answers ()
