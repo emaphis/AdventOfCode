@@ -11,15 +11,19 @@ let getData (fileName: string) =
     |> List.ofSeq
 
 
-let data01 = getData "data01.txt"
 let test01 = getData "dataTest01.txt"
+let data01 = getData "data01.txt"
 
 
 /// Parsing locations and returning the data in two lists.
-let parseLocations (input: string list) =
-    input
-    |> List.map (fun line -> line.Split("   ") |> Seq.map int |> Seq.toList)
-    |> List.transpose
+let parseLocations (input: string list)  =
+    let arrays =
+        input
+        |> List.map _.Split("   ")
+        |> Array.transpose
+    let first = arrays[0] |> Array.map int |> Array.toList
+    let second = arrays[1] |> Array.map int |> Array.toList
+    (first, second)
 
 
 //parseLocations test01
@@ -30,7 +34,7 @@ let parseLocations (input: string list) =
 
 /// Calulate the distances between locations in two location lists
 let part1 input =
-    let [first; second] = parseLocations input
+    let (first, second) = parseLocations input
     List.zip (first |> List.sort) (second |> List.sort)
     |> List.map (fun (x,y) -> abs (x - y))
     |> List.sum
@@ -44,8 +48,8 @@ let part1 input =
 
 /// Calulate the distances between locations in two location lists
 let part2 input =
-    let [first; second] = parseLocations input
-    [ for element in first -> (element, second |> List.filter (fun x -> x = element) |> List.length)]
+    let (first, second) = parseLocations input
+    [ for elem in first -> (elem, second |> List.filter (fun x -> x = elem) |> List.length)]
     |> List.map (fun (x,y) -> x*y)
     |> List.sum
 
@@ -63,7 +67,7 @@ let tests () =
     test <@ List.zip [1; 2; 3; 3; 3; 4] [3; 3; 3; 4; 5; 9]
         =  [(1, 3); (2, 3); (3, 3); (3, 4); (3, 5); (4, 9)] @>
     
-    test <@ parseLocations test01 = [[3; 4; 2; 1; 3; 3]; [4; 3; 5; 3; 9; 3]] @>
+    test <@ parseLocations test01 = ([3; 4; 2; 1; 3; 3], [4; 3; 5; 3; 9; 3]) @>
     test <@ part1 test01 = 11 @>
     test <@ part1 data01 = 1666427 @>
     test <@ part2 test01 = 31 @>
