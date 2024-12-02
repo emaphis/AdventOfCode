@@ -11,7 +11,7 @@ let getData (fileName: string) =
     |> List.ofSeq
 
 
-let test01 = getData "dataTest01.txt"
+let test01 = getData "test01.txt"
 let data01 = getData "data01.txt"
 
 

@@ -12,7 +12,7 @@ let getData (fileName: string) =
 
 
 let data00 = getData "data00.txt"
-let test00 = getData "dataTest00.txt"
+let test00 = getData "test00.txt"
 
 
 /// Example parsing function
