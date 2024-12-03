@@ -35,52 +35,43 @@ let parseData (input: string list) =
     |> List.toSeq
 
 
-let testD = parseData test02
-let dataD = parseData data02
+//let testD = parseData test02
+//let dataD = parseData data02
 
 
 // Part 1
 
 let isSafe (levels: seq<int>) =
-    let findPairs (levels : seq<int>) = Seq.zip levels (Seq.tail levels)
-    
     let within (lower:int, upper: int) pairs =
         pairs
         |> Seq.forall (fun pair -> 
                         let diff = abs (fst pair - snd pair)
                         lower <= diff && diff <= upper)
 
-    let pairs = findPairs levels
+    let pairs = Seq.pairwise levels
     let allIncr = pairs |> Seq.forall (fun (x, y) -> x < y) 
     let allDecr = pairs |> Seq.forall (fun (x, y) -> x > y) 
 
     (allIncr || allDecr) && within (1, 3) pairs
 
-let report = Seq.head testD
-isSafe report.Levels
-printfn "%A" report
 
-
-/// Sum a list of of strings representing integers
+/// Count all the safe test reports
 let part1 data  =
-    data
-    |> Seq.map (fun rpt -> isSafe(rpt.Levels))
-    |> Seq.map (fun bl -> if bl then 1 else 0)
-    |> Seq.sum
+    parseData data
+    |> Seq.filter (fun report -> isSafe report.Levels)
+    |> Seq.length
 
-//printfn "%A" (part1 testD)
-//part1 dataD
+printfn "%A" (part1 test02)
+part1 data02
 
 
 // Part 2
 
-/// Sum a list of integers multiplied by 10
-let part2 input  =
-    let data = parseData input
-    data
-    |> Seq.map (fun rpt -> isSafe(rpt.Levels))
-    |> Seq.map (fun bl -> if bl then 1 else 0)
-    //|> Seq.sum
+/// Count all the safe test reports
+let part2 data  =
+    parseData data
+    |> Seq.filter (fun report -> isSafe report.Levels)
+    |> Seq.length
 
 
 part2 test02
@@ -93,18 +84,18 @@ let tests () =
     printf "Testing.."
     test <@ 1 + 1 = 2 @>
    // test <@ parseData test02 = [10; 20; 30; 40; 50] @>
-    test <@ part1 dataD = 2 @>
+    test <@ part1 data02 = 287 @>
     //test <@ part2 testD = 1500 @>
     //test <@ part2 dataD = 5100 @>
     printfn "...done!"
 
 do tests ()
 
-parseData test02
+
 // Output
 
 let answers () =
-    printfn $"Part 1: {part1 dataD}"
+    printfn $"Part 1: {part1 data02}"
     //printfn $"Part 2: {part2 dataD}"
 
 do answers ()
