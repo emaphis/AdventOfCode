@@ -61,21 +61,34 @@ let part1 data  =
     |> Seq.filter (fun report -> isSafe report.Levels)
     |> Seq.length
 
-printfn "%A" (part1 test02)
-part1 data02
+//printfn "%A" (part1 test02)
+//part1 data02
 
 
 // Part 2
 
-/// Count all the safe test reports
+/// Generate a seq of dampened levels
+let dampener levels =
+    seq {
+        yield levels
+        let length = (levels |> Seq.length) - 1
+        for i in [0..length] -> levels |> Seq.removeAt i
+    }
+
+/// Check of report levels are safe after dampening.
+let isSafeDampen levels =
+    let dLevels = dampener levels
+    dLevels |> Seq.exists isSafe
+
+/// Count all the safe test reports after dampening
 let part2 data  =
     parseData data
-    |> Seq.filter (fun report -> isSafe report.Levels)
+    |> Seq.filter (fun report -> isSafeDampen report.Levels)
     |> Seq.length
 
 
-part2 test02
-part2 data02
+//part2 test02
+//part2 data02
 
 
 // Tests and examples
@@ -85,8 +98,8 @@ let tests () =
     test <@ 1 + 1 = 2 @>
    // test <@ parseData test02 = [10; 20; 30; 40; 50] @>
     test <@ part1 data02 = 287 @>
-    //test <@ part2 testD = 1500 @>
-    //test <@ part2 dataD = 5100 @>
+    test <@ part2 test02 = 4 @>
+    test <@ part2 data02 = 354 @>
     printfn "...done!"
 
 do tests ()
@@ -96,6 +109,6 @@ do tests ()
 
 let answers () =
     printfn $"Part 1: {part1 data02}"
-    //printfn $"Part 2: {part2 dataD}"
+    printfn $"Part 2: {part2 data02}"
 
 do answers ()
