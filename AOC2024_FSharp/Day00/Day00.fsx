@@ -11,8 +11,8 @@ let getData (fileName: string) =
     |> List.ofSeq
 
 
-let data00 = getData "data00.txt"
 let test00 = getData "test00.txt"
+let data00 = getData "data00.txt"
 
 
 /// Example parsing function
@@ -39,6 +39,8 @@ let part1 input =
 part1 test00
 part1 data00
 
+// Answer: 510
+
 
 // Part 2
 
@@ -53,12 +55,12 @@ let part2 input =
 part2 test00
 part2 data00
 
+// Answer: 5100
 
 // Tests and examples
 
 let tests () =
     printf "Testing.."
-    test <@ 1 + 1 = 2 @>
     test <@ parseExample test00 = [10; 20; 30; 40; 50] @>
     test <@ parseExample data00 =  [100; 101; 102; 103; 104] @>
     test <@ part1 test00 = 150 @>
