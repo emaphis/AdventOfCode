@@ -4,7 +4,7 @@ An exercise in regular expressions and simple langage interpreters.
 
 Part 2 is basically a three instruction language
 
-mul(9,9)  // A multiplication express
+mul(9,9)  // A multiplication expression
 do        // expression evaluator
 don't     // essentially a comment.
 
