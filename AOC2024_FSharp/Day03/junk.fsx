@@ -1,20 +1,22 @@
 open System.IO
 open System.Text.RegularExpressions
 
-  /// Get data from the `..\data` directory and store it in a list of string
+  /// Get data from the `..\data` directory and store it in a string
+  /// since there is only one item in the data file
 let getData (fileName: string) =
     File.ReadAllText $"""{__SOURCE_DIRECTORY__}\..\Data\{fileName}"""
 
 let input = getData "data03.txt"
 let example1 = getData "test03.txt"
 
-let example =
-    """xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"""
+// Since Part 2 is a language with a simple syntax let's turn this into a simple interpreter.
+/// Syntax tokens for the interpreter.
 
-let parse input = 
-    let regex = Regex("mul\((\d+),(\d+)\)")
-    let m = regex.Matches(input)
-    m |> Seq.map (fun mm -> (int mm.Groups.[1].Value, int mm.Groups.[2].Value)) |> Seq.toList
 
-let numbers = example1 |> parse
-numbers |> List.map (fun (a,b) -> a * b) |> List.sum
+let rx =
+            Regex(@"mul\((\d{1,3}),(\d{1,3})\)|don't\(\)|do\(\)", RegexOptions.Compiled ||| RegexOptions.Multiline)
+
+
+let matches = rx.Matches(example1)
+
+printfn "%A" matches
