@@ -48,16 +48,16 @@ let parseTokens (input: string) =
 let processTokens (tokens: Token seq) =
     tokens
     |>Seq.fold (fun (sum, domult) tkns ->
-    match tkns with
-    | Do  -> (sum, true)
-    | Dont -> (sum, false)
-    | Mul (x, y) ->
-        let newSum =
-            match domult with
-            | true -> x * y + sum
-            | false -> sum
-        (newSum, domult)
-    ) (0, true)
+        match tkns with
+        | Do  -> (sum, true)
+        | Dont -> (sum, false)
+        | Mul (x, y) ->
+            let newSum =
+                match domult with
+                | true -> x * y + sum
+                | false -> sum
+            (newSum, domult)
+        ) (0, true)
     |> fst
 
 //processTokens testTokens  // 48
@@ -67,8 +67,8 @@ let part2 input =
     let data = parseTokens input
     processTokens data
 
-let part01Test = part2 test03  // 48
-let part01Ans = part2  data03  // 106921067
+//let part01Test = part2 test03  // 48
+//let part01Ans = part2  data03  // 106921067
 
 // Answer: 106921067
 
