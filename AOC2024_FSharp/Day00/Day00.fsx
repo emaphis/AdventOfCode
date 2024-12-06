@@ -10,12 +10,14 @@ let getData (fileName: string) =
     File.ReadAllLines $"""{__SOURCE_DIRECTORY__}\..\Data\{fileName}"""
     |> List.ofSeq
 
+/// Test data
+let testData = getData "test00.txt"
 
-let test00 = getData "test00.txt"
-let data00 = getData "data00.txt"
+/// Production data
+let prodData = getData "data00.txt"
 
 
-/// Example parsing function
+/// Parse example data
 let parseExample (input: string list) =
     input   // .Split('\n')
     |> List.map (fun str -> str.Trim())
@@ -23,8 +25,8 @@ let parseExample (input: string list) =
     |> List.ofSeq
 
 
-parseExample test00
-parseExample data00
+let tData = parseExample testData
+let pData = parseExample prodData
 
 
 // Part 1
@@ -36,8 +38,8 @@ let part1 input =
     |> List.sum
 
 
-part1 test00
-part1 data00
+part1 testData
+part1 prodData
 
 // Answer: 510
 
@@ -52,8 +54,8 @@ let part2 input =
     |> List.sum
 
 
-part2 test00
-part2 data00
+part2 testData
+part2 prodData
 
 // Answer: 5100
 
@@ -61,12 +63,12 @@ part2 data00
 
 let tests () =
     printf "Testing.."
-    test <@ parseExample test00 = [10; 20; 30; 40; 50] @>
-    test <@ parseExample data00 =  [100; 101; 102; 103; 104] @>
-    test <@ part1 test00 = 150 @>
-    test <@ part1 data00 = 510 @>
-    test <@ part2 test00 = 1500 @>
-    test <@ part2 data00 = 5100 @>
+    test <@ parseExample testData = [10; 20; 30; 40; 50] @>
+    test <@ parseExample prodData =  [100; 101; 102; 103; 104] @>
+    test <@ part1 testData = 150 @>
+    test <@ part1 prodData = 510 @>
+    test <@ part2 testData = 1500 @>
+    test <@ part2 prodData = 5100 @>
     printfn "...done!"
 
 do tests ()
@@ -75,7 +77,7 @@ do tests ()
 // Output
 
 let answers () =
-    printfn $"Part 1: {part1 data00}"
-    printfn $"Part 2: {part2 data00}"
+    printfn $"Part 1: {part1 prodData}"
+    printfn $"Part 2: {part2 prodData}"
 
 do answers ()
