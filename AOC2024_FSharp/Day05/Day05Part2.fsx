@@ -95,7 +95,7 @@ let correct (rules: Rule list) (update: Updates) =
         match update with
         | [] -> updatesAcc |> List.rev
         | _ ->
-            let nextUpdate = 
+            let nextUpdate =
                 seq {
                     for update1 in  update do
                         let rest = update |> List.except [update1]
@@ -109,7 +109,7 @@ let correct (rules: Rule list) (update: Updates) =
 /// Process book changes
 let part2 inputData =
    let rules, updates = parseData inputData
-   
+
    let inValidUpdates =
         updates
         |> List.filter (fun update -> not (checkRules02 rules update))
@@ -118,7 +118,7 @@ let part2 inputData =
    |> List.map (correct rules)
    |> List.map findMiddle
    |> List.sum
-   
+
 
 //part2 testString   // 123
 //part2 prodString   // 4145
