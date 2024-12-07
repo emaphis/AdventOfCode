@@ -38,7 +38,9 @@ let solve (operators: Operator list) (test, values) =
     let rec apply sum vals =
         match vals with
         | _ :: _ when sum > test -> None
-        | i :: tail -> operators |> List.tryPick (fun opr -> apply (opr sum i ) tail)
+        | vl :: tail ->
+            operators
+            |> List.tryPick (fun opr -> apply (opr sum vl ) tail)
         | [] -> if sum = test then Some test else None
     
     apply (List.head values) (List.tail values)
