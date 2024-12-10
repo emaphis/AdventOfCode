@@ -28,7 +28,7 @@ let parseData (data: string) =
 
 
 type Block =
-    | Occupied of int
+    | Item of int
     | Free
 
 type Disk = Block array
@@ -38,7 +38,7 @@ let toBlocks (data: int array) : Block array =
     data
     |> Array.indexed  // number each block from 0
     |> Array.collect (fun (idx, count) ->
-        let block = if idx % 2 = 0 then Occupied(idx / 2) else Free
+        let block = if idx % 2 = 0 then Item(idx / 2) else Free
         Array.replicate count block)
 
 //let x1 = toBlocks parsedD
@@ -52,9 +52,9 @@ let rec compact1 left right (disk: Disk) =
     else
         match (disk[left], disk[right]) with
         | (Free, Free) -> compact1 left (right - 1) disk
-        | (Free, Occupied id) -> disk |> Array.updateAt left (Occupied id) |> Array.updateAt right Free |> compact1 (left + 1) (right - 1)
-        | (Occupied _, Free) -> compact1 (left + 1) (right - 1) disk
-        | (Occupied _, Occupied _) -> compact1 (left + 1) right disk
+        | (Free, Item id) -> disk |> Array.updateAt left (Item id) |> Array.updateAt right Free |> compact1 (left + 1) (right - 1)
+        | (Item _, Free) -> compact1 (left + 1) (right - 1) disk
+        | (Item _, Item _) -> compact1 (left + 1) right disk
 
 
 let checksum (disk: Block array) =
@@ -63,7 +63,7 @@ let checksum (disk: Block array) =
     |> Array.sumBy (fun (i, b) ->
         match b with
         | Free -> 0L
-        | Occupied id -> (int64 i) * (int64 id))
+        | Item id -> (int64 i) * (int64 id))
 
 let part1 input =
     let data = parseData input
@@ -84,8 +84,8 @@ let rec compact2 r (disk: Block array) =
     else
         match disk[r] with
         | Free -> compact2 (r - 1) disk
-        | Occupied id ->
-            let length = disk[..r] |> Array.rev |> Array.takeWhile ((=) (Occupied id)) |> Array.length
+        | Item id ->
+            let length = disk[..r] |> Array.rev |> Array.takeWhile ((=) (Item id)) |> Array.length
             let newR = r - length
             let l = [ 0..r ] |> List.tryFind (fun l -> disk[l .. (l + length - 1)] |> Array.forall ((=) Free))
 
@@ -95,7 +95,7 @@ let rec compact2 r (disk: Block array) =
                 (disk, [ 0 .. (length - 1) ])
                 ||> List.fold (fun acc d ->
                     acc
-                    |> Array.updateAt (l + d) (Occupied id)
+                    |> Array.updateAt (l + d) (Item id)
                     |> Array.updateAt (newR + 1 + d) Free)
                 |> compact2 newR
 
