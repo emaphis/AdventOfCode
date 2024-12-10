@@ -1,53 +1,51 @@
 ﻿// --- Day 10: Hoof It ---
 
-
 open System.IO
 
-
 type Board = int array array
-type Pos = int * int
+type Pos = { X : int; Y : int }
+
+let makePos (x, y) = { X = x; Y = y}
 
 let toInt (chr: char) = int (chr - '0')
 
-/// Get data from the `..\data` directory and store it in a list of string
+/// Get data from the `..\data` directory and create a board
 let getData (fileName: string) : Board =
     File.ReadAllLines $"""{__SOURCE_DIRECTORY__}\..\Data\{fileName}"""
-    |> Array.map (fun str -> str.ToCharArray() |> Array.map toInt))
+    |> Array.map (fun str -> str.ToCharArray() |> Array.map toInt)
 
 /// Check if positon is inbounds of the board
 let inBounds (board: Board) (pos: Pos) =
-    let x, y = pos
-    let rowLim = board.Length
-    let colLim = board[0].Length
-    0 <= x && x < rowLim && 0 <= y && y < colLim
+    let rowLim = board.Length - 1
+    let colLim = board[0].Length - 1
+    0 <= pos.X && pos.X <= rowLim && 0 <= pos.Y && pos.Y <= colLim
 
 /// Get all the moves given a boad and a position
 let rec getMoves (board: Board) (pos: Pos) =
-    let x, y = pos
-    if board[x][y] = 9 then
-        [ (x, y) ]
+    if board[pos.X][pos.Y] = 9 then
+        [ makePos(pos.X, pos.Y) ]
     else
-        [ (-1, 0); (1, 0); (0, -1); (0, 1) ]
-        |> List.map (fun (x1, y1) -> (x + x1, y + y1))
-        |> List.filter (fun (x2, y2) -> inBounds board (x2, y2) && board[x][y] + 1 = board[x2][y2])
-        |> List.collect (fun pos -> (getMoves board pos))
+        [ makePos(-1, 0); makePos(1, 0); makePos(0, -1); makePos(0, 1) ]
+        |> List.map (fun pos1 -> makePos(pos.X + pos1.X, pos.Y + pos1.Y))
+        |> List.filter (fun pos2 -> inBounds board pos2 && board[pos.X][pos.Y] + 1 = board[pos2.X][pos2.Y])
+        |> List.collect (fun pos3 -> (getMoves board pos3))
 
 
-let indexes (board: Board) =
+let produceIndexes (board: Board) =
     let rowLim = board.Length
     let colim = board[0].Length
     seq [ for x in 0 .. rowLim - 1 do
             for y in 0 .. colim - 1 do
                 if board[x][y] = 0 then
-                    (x, y) ]
+                    makePos(x, y) ]
 
 
 let part1 board =
-    (indexes board)
+    (produceIndexes board)
     |> Seq.sumBy (getMoves board >> Set.ofList >> Set.count)
 
 let part2 board =
-    (indexes board)
+    (produceIndexes board)
     |> Seq.sumBy (getMoves board >> List.length)
 
 
