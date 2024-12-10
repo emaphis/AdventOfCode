@@ -99,7 +99,7 @@ let rec compact2 r (disk: Block array) =
                     |> Array.updateAt (newR + 1 + d) Free)
                 |> compact2 newR
 
-            
+
 let part2 input =
     let data = parseData input
     let disk = toBlocks data
