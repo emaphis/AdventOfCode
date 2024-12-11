@@ -1,6 +1,9 @@
 ﻿// --- Day 11: Plutonian Pebbles ---
+// Part 2
 
 open System.IO
+open System.Collections.Generic
+
 
 /// Get data from the `..\data` directory and store it in a string
 let getData (fileName: string) =
@@ -19,11 +22,6 @@ let parseData (input: string) =
     input.Split(' ')
     |> List.ofArray
     |> List.map uint64
-
-
-//let tData = parseData testData
-//let pData = parseData prodData
-
 
 
 let splitHalf (str: string) = 
@@ -48,39 +46,67 @@ let rules stone =
             [stone * 2024UL]    // C.
 
 
-/// Apply the rules to a list of stones
-let blink stones =
-    stones |> List.collect rules
-    
+/// Memoized blinking
+let blinkM (dict: Dictionary<uint64, uint64>) =
+    for kvp in dict |> Seq.toArray do
+        let value = kvp.Value
+        if value > 0UL then
+            dict[kvp.Key] <- dict[kvp.Key] - value
+            for item in rules kvp.Key do
+                match dict.ContainsKey item with
+                | true -> dict[item] <- dict[item] + value
+                | false -> dict.Add(item, value)
 
-/// Blink `num` of times
-let rec blinking num acc =
-    match num with
-    | 0 ->  acc
-    | _ -> blinking (num - 1) (blink acc)
 
 
-/// Blink 25 times
-let part1 input =
+let createDictionary stones =
+    stones
+    |> Seq.groupBy id
+    |> Seq.map (fun (key, value) -> key, value |> Seq.length |> uint64)
+    |> dict
+    |> Dictionary
+
+
+/// Blink num times
+let part2 input num =
     let stones = parseData input
-    let list = blinking 25 stones
-    List.length list
-        
+    let dict = createDictionary stones
+    
+    // Process dictionary
+    for n = 1 to num do
+        blinkM dict
 
-//part1 testData  // 55312
+    dict
+    |> Seq.toArray
+    |> Seq.sumBy (fun item -> item.Value)
+
+
+
+//#time
+//let output1 = part2 prodData  25 // 186424
+//#time
+// original:  Real: 00:00:00.329, CPU: 00:00:00.578, GC gen0: 5, gen1: 2, gen2: 1
+// memoized:  Real: 00:00:00.004, CPU: 00:00:00.015, GC gen0: 1, gen1: 0, gen2: 0
+
+//#time
+//let output3 = part2 testData  75 // 65601038650482UL
+//#time
+// Real: 00:00:00.004, CPU: 00:00:00.015, GC gen0: 1, gen1: 0, gen2: 0
 
 #time
-let output1 = part1 prodData  // 186424
+let output4 = part2 prodData  75 // 186424
 #time
-// Real: 00:00:00.329, CPU: 00:00:00.578, GC gen0: 5, gen1: 2, gen2: 1
+//Real: 00:00:00.130, CPU: 00:00:00.140, GC gen0: 27, gen1: 1, gen2: 0
+//val output4: uint64 = 219838428124832UL
+
 
 
 // Output
 
 let answers () =
-    printfn $"Part 1: {output1}"
-    //printfn $"Part 2: {part2 prodData}"
+    printfn $"Part 2: {output4}"
+
 
 do answers ()
 
-// Answer: 186424
+// Answer: 219838428124832
