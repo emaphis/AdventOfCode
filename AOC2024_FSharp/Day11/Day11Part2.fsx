@@ -24,10 +24,10 @@ let parseData (input: string) =
     |> List.map uint64
 
 
-let splitHalf (str: string) = 
+let splitHalf (str: string) =
     str |> Seq.splitInto 2
     |> Seq.map (Seq.map string >> String.concat "")
-    |> Seq.map uint64 
+    |> Seq.map uint64
     |> Seq.toList
 
 
@@ -71,7 +71,7 @@ let createDictionary stones =
 let part2 input num =
     let stones = parseData input
     let dict = createDictionary stones
-    
+
     // Process dictionary
     for n = 1 to num do
         blinkM dict
