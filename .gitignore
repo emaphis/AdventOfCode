@@ -11,10 +11,9 @@
 *.sln.docstates
 
 # scratch scripts
-Stuff.fsx
-Stuff1.fsx
-Stuff2.fsx
-Junk.fsx
+Stuff*.*
+Junk*.*
+
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
