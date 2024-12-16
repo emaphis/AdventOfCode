@@ -14,6 +14,8 @@
 Stuff*.*
 Junk*.*
 
+# don't need to back up data files
+data*.txt
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
